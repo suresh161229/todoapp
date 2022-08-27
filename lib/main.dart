@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todoapp/Homepage.dart';
 import 'package:todoapp/Providers/LoginProvider.dart';
-import 'package:todoapp/Login.dart';
+import 'package:todoapp/LoginScreen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:todoapp/Styles.dart';
 
@@ -97,11 +97,4 @@ class _LandingScreenState extends State<LandingScreen> {
       return e;
     }
   }
-
-  // success() async {
-  //   var response = await http.post(
-  //       Uri.parse("http://api.schedyo.com/api/Login/Login"),
-  //       body: {"email": "super@gmail.com", "password": "123456"});
-  //   print(response.body);
-  // }
 }
