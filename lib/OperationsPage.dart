@@ -146,14 +146,12 @@ class _OperationsPageState extends State<OperationsPage> {
                           )),
                       child: TextButton(
                           onPressed: (){
-                            updateTask();
+                            print('docid---'+widget.data[widget.index]['docid'].toString());
+                            updateTask(widget.data[widget.index]['docid']);
                             ToastMessage.successToast('You have Successfully Updated Details');
-                            Future.delayed(const Duration(seconds: 2)).whenComplete((){
+                            Future.delayed(const Duration(seconds: 1)).whenComplete((){
                               return Navigator.pop(context);
                             });
-
-
-
                       },
                           child:const Padding(
                             padding:  EdgeInsets.all(8.0),
@@ -169,7 +167,7 @@ class _OperationsPageState extends State<OperationsPage> {
                           )),
                       child: TextButton(
                           onPressed: (){
-                            deleteTask();
+                            deleteTask(widget.data[widget.index]['docid']);
                             ToastMessage.successToast('You have Successfully Deleted Details');
                             Future.delayed(const Duration(seconds: 2)).whenComplete((){
                               return Navigator.pop(context);
@@ -207,13 +205,11 @@ class _OperationsPageState extends State<OperationsPage> {
 
    return SizedBox(height: size.width*0.1,);
  }
- void deleteTask(){
-   var id = widget.data[widget.index]['id'];
-   var   data =   firestore.collection('tododata').doc(id).delete();
+ void deleteTask(id)async{
+   await firestore.collection('tododata').doc(id).delete();
  }
- void updateTask(){
-   var id = widget.data[widget.index]['id'];
-   var   data =   firestore.collection('tododata').doc(id).update({
+ void updateTask(id)async{
+   await  firestore.collection('tododata').doc(id).update({
      "notification":notificationController.text.toString(),
      "time":timeController.text.toString(),
      "work":workController.text.toString(),

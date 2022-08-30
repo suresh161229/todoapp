@@ -12,7 +12,7 @@ import 'package:todoapp/Styles.dart';
 
 
 class NewThings extends StatefulWidget {
-  const NewThings({Key? key}) : super(key: key);
+  const NewThings( {Key? key}) : super(key: key);
 
   @override
   State<NewThings> createState() => _NewThingsState();
@@ -162,25 +162,15 @@ class _NewThingsState extends State<NewThings> {
                   child: ElevatedButton(
                     child:  Text('Add Your Things',style: Styles.textStyle18,),
                     onPressed: () async{
-                      FirebaseFirestore firestore = FirebaseFirestore.instance;
-                      FirebaseAuth auth = FirebaseAuth.instance;
-                      String id = auth.currentUser!.uid;
-                      CollectionReference reference =  firestore.collection("tododata");
-                      reference.doc().set({
-                        'type':_dropDownValue.toString(),
-                        'place':placeController.text.toString(),
-                        'work':workshopController.text.toString(),
-                        'time':timeController.text.toString(),
-                        'notification':notificationController.text.toString(),
-                        "id":id
-                      });
+                  var  docid  = FirebaseFirestore.instance.collection('tododata').doc().id;
+                  setData(docid);
                      workshopController.clear();
                      placeController.clear();
                      timeController.clear();
                      notificationController.clear();
                       ToastMessage.successToast("You have Successfully Created Task");
                       Future.delayed(const Duration(seconds: 2)).whenComplete((){
-                        return Navigator.pop(context);
+                        return Navigator.pop(context,docid);
                       });
                     },
                   )
@@ -281,6 +271,23 @@ class _NewThingsState extends State<NewThings> {
     setState(() {
       todolist.add(todomodel);
       print(todolist.toString());
+    });
+  }
+
+  setData(docid) async{
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String id = auth.currentUser!.uid;
+    CollectionReference reference =  firestore.collection("tododata");
+    reference.doc(docid).set({
+      'type':_dropDownValue.toString(),
+      'place':placeController.text.toString(),
+      'work':workshopController.text.toString(),
+      'time':timeController.text.toString(),
+      'notification':notificationController.text.toString(),
+      "id":id,
+      "docid":docid
+
     });
   }
 

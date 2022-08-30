@@ -164,16 +164,10 @@ List data = [];
                 padding: const EdgeInsets.only(left: 20.0,right: 20.0),
                 child: Container(
                   height: size.height*0.4,
-
                   child: StreamBuilder(
                     stream: FirebaseFirestore.instance.collection('tododata').snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                      snapshot.data!.docs.map((DocumentSnapshot document){
-                        Map a = document.data() as Map<String, dynamic>;
-                        a['id'] = document.id;
-                        data.add(a);
-                      }).toSet().toList();
-
+                      data = snapshot.data!.docs;
                       return ListView.builder(
                           itemCount: snapshot.data!.docs.length,
                           scrollDirection: Axis.vertical,
@@ -182,46 +176,48 @@ List data = [];
                             if(auth.currentUser!.uid == snapshot.data!.docs[index]['id'] && snapshot.hasData){
                               return   Container(
                                 color: Colors.white,
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.all(0.0),
-                                  leading: Container(
-                                      height: 70.0,
-                                      width: 70.0,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.black),),
-                                      child: Icon(statusIcon(snapshot.data!.docs[index]['type'].toString()))),
-                                  title:  RichText(
-                                    textScaleFactor: 1.5,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.all(0.0),
+                                    leading: Container(
+                                        height: 70.0,
+                                        width: 70.0,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Colors.black),),
+                                        child: Icon(statusIcon(snapshot.data!.docs[index]['type'].toString()))),
+                                    title:  RichText(
+                                      textScaleFactor: 1.5,
+                                      text: TextSpan(
+                                          style: Styles.fieldstyle,
+                                          children: [
+                                            TextSpan(text: snapshot.data!.docs[index]['type'].toString(),),
+                                            const TextSpan(text: "  "),
+                                            TextSpan(text:snapshot.data!.docs[index]['place'].toString(), ),
 
-                                    text: TextSpan(
-                                        style: Styles.fieldstyle,
-                                        children: [
-                                          TextSpan(text: snapshot.data!.docs[index]['type'].toString(),),
-                                          const TextSpan(text: "  "),
-                                          TextSpan(text:snapshot.data!.docs[index]['place'].toString(), ),
+
+                                          ]),
+                                    ),
+                                    trailing: Text(snapshot.data!.docs[index]['time'].toString(),style: Styles.fieldstylegrey,),
+                                    subtitle: RichText(
+                                      textScaleFactor: 1.5,
+                                      text: TextSpan(
+                                          style: Styles.fieldstylegrey,
+                                          children: [
+                                            TextSpan(text: snapshot.data!.docs[index]['notification'].toString(),),
+                                            const TextSpan(text: "  "),
+                                            TextSpan(text:snapshot.data!.docs[index]['work'].toString(), ),
 
 
-                                        ]),
+                                          ]),
+                                    ),
+                                    selected: true,
+                                    onTap: () {
+                                     Navigator.push(context, MaterialPageRoute(builder: (context)=> OperationsPage(data: data,index: index,)));
+
+                                    },
                                   ),
-                                  trailing: Text(snapshot.data!.docs[index]['time'].toString(),style: Styles.fieldstylegrey,),
-                                  subtitle: RichText(
-                                    textScaleFactor: 1.5,
-                                    text: TextSpan(
-                                        style: Styles.fieldstylegrey,
-                                        children: [
-                                          TextSpan(text: snapshot.data!.docs[index]['notification'].toString(),),
-                                          const TextSpan(text: "  "),
-                                          TextSpan(text:snapshot.data!.docs[index]['work'].toString(), ),
-
-
-                                        ]),
-                                  ),
-                                  selected: true,
-                                  onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> OperationsPage(data: data,index: index,)));
-
-                                  },
                                 ),
                               );
                             } else if(snapshot.data!.docs.isEmpty && auth.currentUser!.uid != snapshot.data!.docs[index]['id']){
@@ -248,14 +244,6 @@ List data = [];
                   const SizedBox(
                     width: 15,
                   ),
-                  // Container(
-                  //   height: 20.0,
-                  //   width: 20.0,
-                  //   decoration: BoxDecoration(
-                  //     shape: BoxShape.circle,
-                  //     border: Border.all(color: Colors.grey),),
-                  //   child: const Center(child: Text('5')),
-                  // ),
                 ],
               ),
 
@@ -265,10 +253,10 @@ List data = [];
         floatingActionButton:  FloatingActionButton(
             elevation: 0.0,
             backgroundColor:  Colors.lightBlue,
-            onPressed: () async{
+            onPressed: () {
 
-             var result = await   Navigator.push(context, MaterialPageRoute(builder: (context)=>const NewThings()));
-             print(result.toString());
+             Navigator.push(context, MaterialPageRoute(builder: (context)=>const  NewThings()));
+
 
             },
             child:  const Icon(Icons.add)
